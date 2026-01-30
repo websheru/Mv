@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sheru Movie Database</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* ================= ULTRA MODERN CSS ================= */
+        :root {
+            --primary: #00d2ff;
+            --secondary: #3a7bd5;
+            --dark-bg: #0f0c29;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --text-color: #ffffff;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --neon-glow: 0 0 10px rgba(0, 210, 255, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background: radial-gradient(circle at center, #1a1c2e 0%, #0f0c29 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* HEADER & SEARCH */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 800;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 16px 50px 16px 25px;
+            font-size: 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            color: white;
+            transition: 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .search-box:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.15);
+            outline: none;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            pointer-events: none;
+        }
+
+        /* RESULTS LIST CONTAINER */
+        .results-container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* === ROW DESIGN (LEFT NAME - RIGHT BUTTON) === */
+        .movie-card {
+            background: var(--card-bg);
+            border: var(--glass-border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 0.4s ease-out forwards;
+        }
+
+        .movie-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 210, 255, 0.4);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Movie Icon & Name Wrapper */
+        .movie-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            min-width: 0; /* Critical for text-overflow */
+            padding-right: 10px;
+        }
+
+        .file-icon {
+            color: #ff9f43;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            filter: drop-shadow(0 0 5px rgba(255, 159, 67, 0.3));
+        }
+
+        .movie-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: #ececec;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* ... logic */
+        }
+
+        /* GET BUTTON DESIGN */
+        .get-btn {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            border: none;
+            padding: 9px 20px;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .get-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+            filter: brightness(1.1);
+        }
+
+        /* LOAD MORE & NOT FOUND */
+        #loadMoreBtn {
+            margin: 30px auto;
+            padding: 12px 35px;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s;
+            display: none;
+        }
+        #loadMoreBtn:hover { background: var(--primary); color: #0f0c29; box-shadow: 0 0 15px var(--primary); }
+
+        .not-found { text-align: center; margin-top: 60px; display: none; animation: fadeIn 0.5s; }
+        .not-found h2 { color: #ff6b6b; margin-bottom: 10px; font-size: 1.5rem; }
+        .not-found p { color: #aaa; margin-bottom: 20px; }
+        
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.05);
+            color: #00d2ff;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        .action-btn:hover { background: rgba(0, 210, 255, 0.1); border-color: var(--primary); transform: translateY(-2px); }
+
+        /* Loader */
+        .loader {
+            width: 45px; height: 45px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 40px auto;
+            display: none;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Responsive Tweaks */
+        @media (max-width: 500px) {
+            .header h1 { font-size: 1.5rem; }
+            .movie-card { padding: 12px; }
+            .movie-title { font-size: 14px; }
+            .get-btn { padding: 7px 14px; font-size: 12px; }
+            .file-icon { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Sheru Search <span style="font-size:1rem;">🚀</span></h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-box" placeholder="Search Movie, Series...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+    </div>
+
+    <div id="loader" class="loader"></div>
+    <div id="resultsContainer" class="results-container"></div>
+    <button id="loadMoreBtn">Load More Result</button>
+
+    <div id="notFound" class="not-found">
+        <h2>Result Not Found 😕</h2>
+        <p>Shayad ye aapko yahan mil jaye 👇</p>
+        <div style="margin-top: 15px;">
+            <a href="https://t.me/YOUR_BOT" target="_blank" class="action-btn"><i class="fab fa-telegram-plane"></i> Main Bot</a>
+            <a href="https://t.me/YOUR_CHANNEL" target="_blank" class="action-btn"><i class="fas fa-film"></i> Channel</a>
+            <a href="https://t.me/YOUR_REQ_BOT" target="_blank" class="action-btn"><i class="fas fa-question-circle"></i> Request</a>
+        </div>
+    </div>
+
+    <script>
+        // ================= CONFIGURATION =================
+        const JSON_FILE = 'video_database.json'; // Ensure this file is uploaded
+        const BOT_URL = 'http://t.me/Cateromoviesbot?start=';
+        const ITEMS_PER_PAGE = 15;
+
+        // Encryption Map (0->abc, 1->jkl...)
+        const encryptMap = {
+            '0': 'abc', '1': 'jkl', '2': 'tgk', '3': 'vhi', '4': 'uop',
+            '5': 'vui', '6': 'mlo', '7': 'bod', '8': 'vhl', '9': 'bnm'
+        };
+
+        function encryptId(id) {
+            return id.toString().split('').map(char => encryptMap[char] || char).join('');
+        }
+
+        // Logic Variables
+        let allData = [];
+        let filteredData = [];
+        let currentIndex = 0;
+
+        const searchInput = document.getElementById('searchInput');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        const notFound = document.getElementById('notFound');
+        const loader = document.getElementById('loader');
+
+        // --- CORE FUNCTIONS ---
+
+        // 1. Load Database & Check URL Param
+        async function loadDatabase() {
+            loader.style.display = 'block';
+            try {
+                const response = await fetch(JSON_FILE);
+                allData = await response.json();
+                loader.style.display = 'none';
+
+                // === URL PARAM LOGIC (THE MAGIC) ===
+                const urlParams = new URLSearchParams(window.location.search);
+                const findQuery = urlParams.get('find');
+
+                if (findQuery) {
+                    searchInput.value = findQuery; // Box me likho
+                    performSearch(findQuery);      // Search run karo
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                loader.style.display = 'none';
+                resultsContainer.innerHTML = '<p style="text-align:center; color:#ff6b6b; margin-top:20px;">Error loading database. Please refresh.</p>';
+            }
+        }
+
+        // 2. Search Logic (Common Function)
+        function performSearch(query) {
+            const keyword = query.toLowerCase().trim();
+            
+            // Reset UI
+            resultsContainer.innerHTML = '';
+            currentIndex = 0;
+            loadMoreBtn.style.display = 'none';
+            notFound.style.display = 'none';
+
+            if (keyword.length === 0) return;
+
+            // Filter Data
+            filteredData = allData.filter(item => item.Naam.toLowerCase().includes(keyword));
+
+            if (filteredData.length === 0) {
+                notFound.style.display = 'block';
+            } else {
+                renderItems();
+            }
+        }
+
+        // 3. Render List Items
+        function renderItems() {
+            const nextItems = filteredData.slice(currentIndex, currentIndex + ITEMS_PER_PAGE);
+            
+            nextItems.forEach(item => {
+                const encryptedId = encryptId(item.Id);
+                const finalUrl = BOT_URL + encryptedId;
+
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                card.innerHTML = `
+                    <div class="movie-info">
+                        <i class="fas fa-file-video file-icon"></i>
+                        <div class="movie-title">${item.Naam}</div>
+                    </div>
+                    <a href="${finalUrl}" target="_blank" class="get-btn">
+                        GET <i class="fas fa-download"></i>
+                    </a>
+                `;
+                resultsContainer.appendChild(card);
+            });
+
+            currentIndex += ITEMS_PER_PAGE;
+            
+            // Toggle Load More Button
+            if (currentIndex >= filteredData.length) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+
+        // Typing Search
+        searchInput.addEventListener('input', (e) => {
+            performSearch(e.target.value);
+        });
+
+        // Load More Click
+        loadMoreBtn.addEventListener('click', renderItems);
+
+        // Init
+        loadDatabase();
+
+    </script>
+</body>
+</html>
