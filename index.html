@@ -5,41 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>Sheru Cloud Drive - Secure File Access</title>
-    <meta name="description" content="Securely access and retrieve your saved cloud files via Telegram Gateway. Personal cloud storage interface.">
-    <meta name="keywords" content="cloud storage, file viewer, telegram files, secure drive, data retrieval">
+    <meta name="description" content="Securely access shared cloud files via Telegram Gateway. Personal cloud storage interface.">
     <meta name="robots" content="index, follow"> 
     
-    <meta property="og:title" content="Sheru Cloud Gateway">
-    <meta property="og:description" content="Access your shared files securely.">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/3767/3767084.png">
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* ================= CLOUD DASHBOARD CSS ================= */
+        /* ================= ULTRA MODERN CLOUD CSS ================= */
         :root {
-            --bg-body: #f4f6f8;
-            --bg-card: #ffffff;
-            --primary: #2979ff;       /* Google Blue style */
-            --text-main: #333;
-            --text-sub: #666;
-            --border: #e0e0e0;
+            --bg-body: #f8f9fa;
+            --bg-surface: #ffffff;
+            --primary: #0061fe; /* Dropbox Blue */
+            --text-main: #1e1919;
+            --text-sub: #6e6d7a;
+            --border: #e6e6e9;
+            --shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
 
-        /* Dark Mode Auto-Support */
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-body: #121212;
-                --bg-card: #1e1e1e;
-                --primary: #448aff;
-                --text-main: #e0e0e0;
+                --bg-body: #0f0f10;
+                --bg-surface: #1c1c1e;
+                --primary: #3984ff;
+                --text-main: #ffffff;
                 --text-sub: #a0a0a0;
-                --border: #333;
+                --border: #2c2c2e;
             }
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', 'Segoe UI', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body {
             background-color: var(--bg-body);
@@ -49,11 +44,11 @@
             flex-direction: column;
         }
 
-        /* HEADER - Looks like Drive/Dropbox */
+        /* NAVBAR */
         .navbar {
-            background: var(--bg-card);
-            padding: 15px 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: var(--bg-surface);
+            padding: 15px 24px;
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -64,121 +59,113 @@
 
         .brand {
             font-size: 1.2rem;
-            font-weight: 600;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 10px;
-            color: var(--primary);
+            color: var(--text-main);
         }
+        .brand i { color: var(--primary); font-size: 1.4rem; }
 
-        /* SEARCH AREA */
-        .search-area {
-            background: var(--primary);
-            padding: 40px 20px;
+        /* SEARCH HERO */
+        .search-container {
+            padding: 40px 20px 20px;
             text-align: center;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
         }
 
-        .search-area h2 { color: white; margin-bottom: 20px; font-weight: 500; font-size: 1.5rem; }
-
-        .input-group {
+        .search-wrapper {
             max-width: 600px;
             margin: 0 auto;
             position: relative;
+            background: var(--bg-surface);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
             display: flex;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            background: var(--bg-card);
-            overflow: hidden;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .search-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 97, 254, 0.1);
         }
 
         .search-input {
             flex: 1;
-            padding: 15px 20px;
+            padding: 16px 20px;
             border: none;
-            background: var(--bg-card);
-            color: var(--text-main);
+            background: transparent;
             font-size: 16px;
+            color: var(--text-main);
             outline: none;
         }
 
         .search-btn {
-            padding: 0 25px;
-            background: var(--bg-card);
+            padding: 0 20px;
+            background: transparent;
             border: none;
             color: var(--primary);
-            cursor: pointer;
             font-size: 18px;
-            border-left: 1px solid var(--border);
-            transition: 0.2s;
+            cursor: pointer;
         }
-        .search-btn:hover { background: #f5f5f5; }
 
-        /* FILE GRID */
-        .container {
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 0 20px;
+        /* RESULTS AREA */
+        .content-area {
             flex: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px;
         }
 
-        .section-title {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-sub);
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-
-        .file-list {
+        .files-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
         }
 
-        /* FILE CARD - Looks like a File, not a Movie Poster */
+        /* FILE CARD DESIGN */
         .file-card {
-            background: var(--bg-card);
+            background: var(--bg-surface);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 15px;
+            padding: 16px;
             display: flex;
             align-items: center;
             gap: 15px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
             text-decoration: none;
             color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: fadeIn 0.4s ease forwards;
         }
 
         .file-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow);
             border-color: var(--primary);
         }
 
-        .icon-box {
-            width: 45px; height: 45px;
-            background: rgba(41, 121, 255, 0.1);
-            color: var(--primary);
+        .icon-wrapper {
+            width: 48px; height: 48px;
+            background: rgba(0, 97, 254, 0.08);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: var(--primary);
             font-size: 1.2rem;
             flex-shrink: 0;
         }
 
-        .file-info {
+        .file-details {
             flex: 1;
             overflow: hidden;
         }
 
         .file-name {
+            font-weight: 600;
             font-size: 0.95rem;
-            font-weight: 500;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -189,176 +176,203 @@
             font-size: 0.75rem;
             color: var(--text-sub);
             display: flex;
-            align-items: center;
             gap: 10px;
         }
 
-        /* UTILS */
+        /* ERROR / STATUS STATES */
+        .status-box {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-sub);
+        }
+        .status-box i { font-size: 2.5rem; margin-bottom: 15px; display: block; opacity: 0.5; }
+
+        /* LOADER */
         .loader {
-            border: 3px solid rgba(0,0,0,0.1);
-            border-top: 3px solid var(--primary);
+            width: 36px; height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
             border-radius: 50%;
-            width: 30px; height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 30px auto;
-            display: none;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
         }
 
-        .load-more {
+        .load-more-btn {
             display: block;
             margin: 30px auto;
-            padding: 10px 25px;
+            padding: 12px 30px;
+            background: var(--bg-surface);
             border: 1px solid var(--border);
-            background: var(--bg-card);
+            border-radius: 50px;
             color: var(--text-main);
-            border-radius: 6px;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 14px;
+            transition: 0.2s;
             display: none;
         }
-        .load-more:hover { background: var(--bg-body); }
+        .load-more-btn:hover { border-color: var(--primary); color: var(--primary); }
 
         footer {
             text-align: center;
-            padding: 20px;
-            font-size: 12px;
+            padding: 24px;
+            font-size: 0.8rem;
             color: var(--text-sub);
-            background: var(--bg-card);
+            background: var(--bg-surface);
             border-top: 1px solid var(--border);
-            margin-top: 40px;
         }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="brand">
-            <i class="fas fa-cloud-download-alt"></i> Sheru Cloud
-        </div>
-        <div style="font-size:0.9rem; color:var(--text-sub);">
-            <i class="fas fa-shield-alt"></i> Secure Gateway
+        <div class="brand"><i class="fas fa-cloud"></i> Sheru Drive</div>
+        <div style="font-size:0.85rem; color:var(--text-sub);">
+            <i class="fas fa-lock"></i> SSL Secure
         </div>
     </nav>
 
-    <div class="search-area">
-        <h2>Access Shared Files</h2>
-        <div class="input-group">
-            <input type="text" id="searchInput" class="search-input" placeholder="Search file name..." autocomplete="off">
-            <button class="search-btn" onclick="triggerSearch()"><i class="fas fa-search"></i></button>
+    <div class="search-container">
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search your files..." autocomplete="off">
+            <button class="search-btn" onclick="triggerSearch()"><i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
 
-    <div class="container">
-        <div class="section-title" id="listTitle">Recent Uploads</div>
-        
-        <div id="loader" class="loader"></div>
-        <div id="fileGrid" class="file-list"></div>
-        
-        <button id="loadMoreBtn" class="load-more" onclick="loadNextPage()">Load More Files</button>
-    </div>
+    <main class="content-area">
+        <div class="files-grid" id="resultsGrid"></div>
+        <div id="loader" class="status-box" style="display:none;"><div class="loader"></div></div>
+        <button id="loadMoreBtn" class="load-more-btn" onclick="loadNextPage()">Load More</button>
+    </main>
 
     <footer>
-        <p>Sheru Cloud Drive &copy; 2026. Secure Telegram File Gateway.</p>
-        <p>DMCA: This site does not host any files. It acts as a search index for user-generated content.</p>
+        <p>&copy; 2026 Sheru Cloud Storage. Encrypted Gateway.</p>
     </footer>
 
     <script>
         // ================= CONFIGURATION =================
+        // 👇 APNI DEPLOY KI HUI URL YAHAN REPLACE KARO
         const API_URL = "https://script.google.com/macros/s/AKfycbyRu8BUJJFkM3jFhd3BEShg98iblyfyoptsEB4vhr2XvJH9yb_biXqa9coIH_rpiubm4Q/exec";
-        const BOT_USERNAME = "Dbmovie_searchbot"; 
         
-        // Default Load (Use generic term like "202" or "video")
-        const DEFAULT_QUERY = "202"; 
+        const BOT_USERNAME = "Dbmovie_searchbot";
+        
+        // 👇 Default broad query (e.g., 'a', 'e', '20') jo almost har file me hoti hai
+        const DEFAULT_QUERY = "a"; 
         // =================================================
 
         let currentPage = 1;
         let currentQuery = "";
         let isFetching = false;
 
-        // Encryption Logic (Same as before)
-        const encryptMap = { '0': 'abc', '1': 'jkl', '2': 'tgk', '3': 'vhi', '4': 'uop', '5': 'vui', '6': 'mlo', '7': 'bod', '8': 'vhl', '9': 'bnm' };
+        // Encryption
+        const encryptMap = {'0':'abc','1':'jkl','2':'tgk','3':'vhi','4':'uop','5':'vui','6':'mlo','7':'bod','8':'vhl','9':'bnm'};
         function encryptId(id) { return id.toString().split('').map(char => encryptMap[char] || char).join(''); }
 
-        // Fetch Function
+        // --- CORE SEARCH LOGIC ---
         async function fetchFiles(query, page, isInitial = false) {
             if (isFetching) return;
             isFetching = true;
-            
+
             const loader = document.getElementById('loader');
-            const grid = document.getElementById('fileGrid');
+            const grid = document.getElementById('resultsGrid');
             const btn = document.getElementById('loadMoreBtn');
-            const title = document.getElementById('listTitle');
 
             loader.style.display = 'block';
             btn.style.display = 'none';
-
             if (page === 1) grid.innerHTML = '';
 
-            // SEO: URL Update (Use 'q' instead of 'find' for file look)
+            // SEO: URL Update
             if (!isInitial) {
-                const newUrl = `${window.location.pathname}?q=${encodeURIComponent(query)}`;
+                const newUrl = `?q=${encodeURIComponent(query)}`;
                 window.history.pushState({path: newUrl}, '', newUrl);
-                document.title = `${query} - File Search`;
-                title.innerText = `Search Results: "${query}"`;
-            } else {
-                title.innerText = "Recent Files";
+                document.title = `${query} - Sheru Drive`;
             }
 
             try {
-                const response = await fetch(`${API_URL}?q=${encodeURIComponent(query)}&page=${page}`);
+                console.log(`Fetching: ${API_URL}?q=${query}&page=${page}`); // Debugging
+
+                // 🔴 FIX: Added 'redirect: follow' for GAS logic
+                const response = await fetch(`${API_URL}?q=${encodeURIComponent(query)}&page=${page}`, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
+
+                if (!response.ok) throw new Error("Network response was not ok");
+
                 const data = await response.json();
+                console.log("Data Received:", data); // Debugging
 
                 if (data && data.length > 0) {
-                    renderFiles(data);
+                    renderCards(data);
                     if (data.length >= 10) btn.style.display = 'block';
                 } else {
-                    if (page === 1) grid.innerHTML = `<div style="text-align:center; padding:40px; color:#999; grid-column: 1/-1;">No files found.</div>`;
+                    if (page === 1) {
+                        grid.innerHTML = `
+                            <div class="status-box">
+                                <i class="fas fa-search"></i>
+                                <h3>No files found</h3>
+                                <p>Try searching for a simpler term like "2024" or "Movie".</p>
+                            </div>`;
+                    } else {
+                        btn.style.display = 'none'; // No more pages
+                    }
                 }
             } catch (error) {
-                console.error(error);
+                console.error("Fetch Error:", error);
+                grid.innerHTML = `
+                    <div class="status-box">
+                        <i class="fas fa-wifi"></i>
+                        <h3>Connection Error</h3>
+                        <p>Could not connect to database. Please check your internet.</p>
+                    </div>`;
             } finally {
                 loader.style.display = 'none';
                 isFetching = false;
             }
         }
 
-        // Render Cards (File Manager Style)
-        function renderFiles(items) {
-            const grid = document.getElementById('fileGrid');
+        // --- RENDER LOGIC ---
+        function renderCards(items) {
+            const grid = document.getElementById('resultsGrid');
+            
             items.forEach(item => {
-                const encryptedId = encryptId(item.Id);
+                // Check if 'Naam' exists (Error prevention)
+                const fileName = item.Naam || item.Name || "Unknown File";
+                const fileId = item.Id || item.ID || "";
+                
+                if(!fileId) return; // Skip invalid items
+
+                const encryptedId = encryptId(fileId);
                 const botLink = `https://t.me/${BOT_USERNAME}?start=${encryptedId}`;
 
-                // Random File Size Generator (Fake aesthetic for realism)
-                const randomSize = (Math.random() * (2.5 - 0.5) + 0.5).toFixed(1) + " GB";
+                // Random size aesthetic
+                const size = (Math.random() * 2 + 0.5).toFixed(1) + " GB";
 
                 const card = document.createElement('a');
                 card.className = 'file-card';
                 card.href = botLink;
                 card.target = "_blank";
                 card.innerHTML = `
-                    <div class="icon-box">
+                    <div class="icon-wrapper">
                         <i class="fas fa-file-video"></i>
                     </div>
-                    <div class="file-info">
-                        <div class="file-name">${item.Naam}</div>
+                    <div class="file-details">
+                        <div class="file-name">${fileName}</div>
                         <div class="file-meta">
-                            <span><i class="fas fa-database"></i> ${randomSize}</span>
-                            <span><i class="fas fa-check-circle"></i> Verified</span>
+                            <span><i class="fas fa-hdd"></i> ${size}</span>
+                            <span><i class="fas fa-check"></i> Available</span>
                         </div>
                     </div>
-                    <div style="color:var(--text-sub);">
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
+                    <div style="color:var(--text-sub);"><i class="fas fa-chevron-right"></i></div>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        // Handlers
+        // --- HANDLERS ---
         function triggerSearch() {
             const val = document.getElementById('searchInput').value.trim();
             if (val) {
@@ -377,15 +391,17 @@
             if (e.key === 'Enter') triggerSearch();
         });
 
-        // Init
+        // --- INIT ---
         window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const q = urlParams.get('q');
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('q');
+
             if (q) {
                 document.getElementById('searchInput').value = q;
                 currentQuery = q;
                 fetchFiles(q, 1);
             } else {
+                // Auto load generic content so page isn't empty
                 currentQuery = DEFAULT_QUERY;
                 fetchFiles(DEFAULT_QUERY, 1, true);
             }
