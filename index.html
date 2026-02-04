@@ -4,31 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>Sheru Cloud Gateway - Secure File Index</title>
-    <meta name="description" content="Access indexed cloud resources securely. Real-time file retrieval gateway.">
-    <meta name="robots" content="index, follow">
-    
-    <meta property="og:title" content="Sheru Cloud Gateway">
-    <meta property="og:description" content="Secure access to shared files.">
-    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/2620/2620583.png">
-    
+    <title>Sheru Cloud - Secure Storage</title>
+    <meta name="description" content="Secure file gateway. Access shared resources instantly.">
+    <meta name="theme-color" content="#0f172a">
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* ================= ULTRA MODERN DASHBOARD CSS ================= */
+        /* ================= MODERN GLASS UI THEME ================= */
         :root {
-            --bg-dark: #050505;
-            --surface: #0f0f10;
-            --primary: #00ffa3; /* Matrix Green/Cyberpunk */
-            --accent: #00d2ff;  /* Tron Blue */
-            --text-main: #ffffff;
-            --text-muted: #888888;
-            --border: rgba(255, 255, 255, 0.1);
-            --glass: rgba(20, 20, 20, 0.7);
+            --bg-dark: #0f172a;
+            --primary: #38bdf8; /* Sky Blue */
+            --accent: #818cf8;  /* Indigo */
+            --glass: rgba(30, 41, 59, 0.7);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glow: 0 0 20px rgba(56, 189, 248, 0.15);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body {
             background-color: var(--bg-dark);
@@ -36,401 +32,359 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            /* Cool Background Pattern */
             background-image: 
-                radial-gradient(circle at 15% 50%, rgba(0, 255, 163, 0.03), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(0, 210, 255, 0.03), transparent 25%);
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(129, 140, 248, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
         }
 
-        /* 1. GLASS NAVBAR */
+        /* 1. NAVBAR (Glass Sticky) */
         .navbar {
-            padding: 15px 5%;
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
-            z-index: 999;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: var(--glass-border);
         }
 
         .brand {
             font-size: 1.4rem;
             font-weight: 700;
-            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             display: flex;
             align-items: center;
             gap: 10px;
+            text-decoration: none;
         }
-        .brand span { color: var(--primary); }
 
-        .status-badge {
-            font-size: 0.8rem;
-            background: rgba(0, 255, 163, 0.1);
-            color: var(--primary);
-            padding: 5px 12px;
+        .status-pill {
+            font-size: 0.75rem;
+            padding: 4px 12px;
             border-radius: 20px;
-            border: 1px solid rgba(0, 255, 163, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .blink {
-            width: 8px; height: 8px; background: var(--primary); border-radius: 50%;
-            animation: pulse 2s infinite;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            font-weight: 500;
         }
 
-        /* 2. HERO DASHBOARD */
-        .hero {
-            padding: 60px 20px 40px;
-            text-align: center;
-            position: relative;
-        }
-
-        .hero h1 {
-            font-size: 2.5rem;
-            line-height: 1.1;
-            margin-bottom: 15px;
-            background: linear-gradient(to right, #fff, #aaa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* LIVE STATS GRID */
-        .stats-grid {
-            display: inline-flex;
-            gap: 20px;
-            margin: 30px 0;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 15px 25px;
-            border-radius: 12px;
-            text-align: left;
-            min-width: 140px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, var(--primary), transparent);
-        }
-
-        .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
-        .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* SEARCH BAR */
-        .search-container {
-            max-width: 650px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .search-box {
-            width: 100%;
-            padding: 20px 60px 20px 25px;
-            border-radius: 16px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            color: white;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-        }
-        .search-box:focus {
-            background: #000;
-            border-color: var(--accent);
-            box-shadow: 0 0 30px rgba(0, 210, 255, 0.1);
-            outline: none;
-        }
-        .search-icon {
-            position: absolute;
-            right: 25px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--accent);
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        /* 3. FILE GRID */
+        /* 2. LAYOUT CONTAINER */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 24px;
             width: 100%;
             flex: 1;
         }
 
+        /* 3. SEARCH HERO SECTION */
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 20px auto 0;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 18px 50px 18px 24px;
+            border-radius: 16px;
+            background: var(--glass);
+            border: var(--glass-border);
+            color: white;
+            font-size: 1.1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+            background: rgba(30, 41, 59, 0.95);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        /* 4. FILE GRID (Responsive) */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Mobile friendly small cards */
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         }
 
         .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            background: var(--glass);
+            border: var(--glass-border);
+            border-radius: 16px;
             padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
             text-decoration: none;
             color: inherit;
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column; /* Stack vertically on mobile */
+            gap: 12px;
             position: relative;
+            overflow: hidden;
         }
+
+        /* Desktop View: Row layout */
+        @media (min-width: 768px) {
+            .card { flex-direction: row; align-items: center; }
+        }
+
         .card:hover {
             transform: translateY(-4px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            background: #141414;
+            border-color: rgba(56, 189, 248, 0.3);
+            background: rgba(40, 50, 70, 0.8);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
         }
 
         .icon-box {
-            width: 45px; height: 45px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 8px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(129, 140, 248, 0.1));
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            transition: 0.3s;
+            font-size: 1.4rem;
+            color: var(--primary);
+            flex-shrink: 0;
         }
-        .card:hover .icon-box { background: var(--primary); color: #000; }
 
         .info { flex: 1; overflow: hidden; }
-        .file-name { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .file-meta { font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 10px; }
+        .file-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
+        .file-meta { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
 
-        /* UTILS */
-        .loader {
-            width: 40px; height: 40px;
-            border: 2px solid var(--border);
-            border-top: 2px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 40px auto;
-            display: none;
+        /* 5. SINGLE FILE VIEW (The "Download" Page) */
+        #fileView { display: none; text-align: center; max-width: 500px; margin: 40px auto; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        .secure-card {
+            background: var(--glass);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 40px;
+            border-radius: 24px;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            backdrop-filter: blur(20px);
         }
-        
-        .no-result { grid-column: 1/-1; text-align: center; padding: 60px; color: var(--text-muted); }
-        
+
+        .big-icon-wrapper {
+            width: 80px; height: 80px; margin: 0 auto 24px;
+            background: linear-gradient(135deg, rgba(56,189,248,0.2), rgba(129,140,248,0.2));
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; color: var(--primary);
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.2);
+        }
+
+        .action-btn {
+            display: block; width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white; padding: 16px; border-radius: 12px;
+            text-decoration: none; font-weight: 600; font-size: 1.1rem;
+            margin-top: 30px; transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
+        }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(56, 189, 248, 0.5); filter: brightness(1.1); }
+
+        .hidden { display: none !important; }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
         /* FOOTER */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 30px;
-            text-align: center;
-            margin-top: auto;
-            background: #000;
-        }
-
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* Mobile */
-        @media (max-width: 600px) {
-            .hero h1 { font-size: 1.8rem; }
-            .stats-grid { gap: 10px; }
-            .stat-card { flex: 1; min-width: 40%; }
-            .search-box { padding: 15px 50px 15px 20px; font-size: 1rem; }
-        }
+        footer { text-align: center; padding: 30px; border-top: var(--glass-border); color: var(--text-muted); font-size: 0.8rem; margin-top: auto; }
+        
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="brand">
-            <i class="fas fa-layer-group" style="color:var(--primary)"></i> 
-            Sheru<span>Drive</span>
-        </div>
-        <div class="status-badge">
-            <div class="blink"></div> System Online
-        </div>
+        <a href="index.html" class="brand">
+            <i class="fas fa-cloud-bolt"></i> Sheru Cloud
+        </a>
+        <div class="status-pill"><i class="fas fa-circle" style="font-size:6px; margin-right:4px;"></i> Encrypted</div>
     </nav>
 
-    <div class="hero">
-        <h1>Global File Index</h1>
+    <div class="container">
         
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="countDisplay">0</div>
-                <div class="stat-label">Resources Indexed</div>
+        <div id="dashboardView">
+            <div class="hero">
+                <h1 style="font-size:2rem; margin-bottom:10px;">Public Index</h1>
+                <p style="color:var(--text-muted);">Secure Gateway for <span id="totalCount" style="color:var(--primary); font-weight:bold;">0</span> files.</p>
+                
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-box" placeholder="Search files, videos, docs..." autocomplete="off">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" style="color:var(--accent)">12ms</div>
-                <div class="stat-label">Server Latency</div>
+
+            <div id="fileGrid" class="grid"></div>
+            
+            <div style="text-align:center; margin-top:40px;">
+                <button id="loadMoreBtn" style="background:transparent; border:1px solid var(--text-muted); color:var(--text-muted); padding:10px 30px; border-radius:30px; cursor:pointer; display:none;">
+                    Load More Results
+                </button>
             </div>
         </div>
 
-        <div class="search-container">
-            <input type="text" id="searchInput" class="search-box" placeholder="Search filename, ID, or tag..." autocomplete="off">
-            <i class="fas fa-search search-icon" onclick="triggerSearch()"></i>
+        <div id="fileView">
+            <div class="secure-card">
+                <div class="big-icon-wrapper"><i class="fas fa-shield-alt"></i></div>
+                <h2 id="viewTitle" style="font-size:1.5rem; margin-bottom:10px; line-height:1.3;">Loading...</h2>
+                <div id="viewId" style="color:var(--text-muted); font-size:0.9rem; font-family:monospace;">ID: ...</div>
+                
+                <div style="margin-top:20px; font-size:0.9rem; color:var(--text-muted); background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                    <i class="fas fa-check-circle" style="color:#22c55e;"></i> Virus Scan Passed
+                </div>
+
+                <a id="downloadBtn" href="#" class="action-btn">
+                    Access File <i class="fas fa-arrow-right" style="margin-left:8px;"></i>
+                </a>
+            </div>
+            <a href="index.html" style="display:block; margin-top:24px; color:var(--text-muted); text-decoration:none;">
+                <i class="fas fa-arrow-left"></i> Return to Search
+            </a>
         </div>
+
     </div>
 
-    <main class="container">
-        <div id="loader" class="loader"></div>
-        <div id="fileGrid" class="grid"></div>
-        
-        <div style="text-align:center; margin-top:30px;">
-            <button id="loadMoreBtn" style="background:none; border:1px solid var(--primary); color:var(--primary); padding:10px 30px; border-radius:50px; cursor:pointer; display:none;">
-                Load More
-            </button>
-        </div>
-    </main>
-
     <footer>
-        <p style="font-size:0.8rem; opacity:0.6;">Sheru Cloud &copy; 2026. Secure Gateway.</p>
+        <p>&copy; 2026 Sheru Cloud Systems. Non-commercial Index.</p>
     </footer>
-
+<script src="/database.js" type="text/javascript" charset="utf-8"></script>
     <script>
-        // ================= CONFIGURATION =================
-        const JSON_PATH = "database.json"; 
+        // ==========================================
+        // 👇👇 DATA AREA: YAHAN APNA DATA PASTE KARO 👇👇
+        // ==========================================
+        
         const BOT_USERNAME = "Dbmovie_searchbot";
         const ITEMS_PER_PAGE = 30;
+        // ==========================================
 
-        // Encryption Map
         const encryptMap = {'0':'abc','1':'jkl','2':'tgk','3':'vhi','4':'uop','5':'vui','6':'mlo','7':'bod','8':'vhl','9':'bnm'};
-        function encryptId(id) { return id.toString().split('').map(char => encryptMap[char] || char).join(''); }
-        // =================================================
+        function encryptId(id) { return id.toString().split('').map(c => encryptMap[c]||c).join(''); }
 
-        let allData = [];
-        let filteredData = [];
         let currentIndex = 0;
+        let filteredData = [];
 
-        // --- 1. INITIALIZE & ANIMATE ---
-        async function init() {
-            const loader = document.getElementById('loader');
-            loader.style.display = 'block';
+        function init() {
+            // Check for ?id=123 (SEO Entry Point)
+            const params = new URLSearchParams(window.location.search);
+            const fileId = params.get('id');
 
-            try {
-                const response = await fetch(JSON_PATH);
-                allData = await response.json();
-                
-                // 🚀 COOL ANIMATION FOR FILE COUNT
-                animateValue("countDisplay", 0, allData.length, 1500);
-
-                checkUrlAndRender();
-                loader.style.display = 'none';
-
-            } catch (error) {
-                console.error("DB Error:", error);
-                document.getElementById('fileGrid').innerHTML = `<div class="no-result">Database connecting...</div>`;
-            }
-        }
-
-        // --- 2. COUNT UP ANIMATION FUNCTION ---
-        // Ye function number ko 0 se badha kar final count tak le jayega (Hacker style)
-        function animateValue(id, start, end, duration) {
-            const obj = document.getElementById(id);
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                // Math.floor logic to show integers
-                obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString(); 
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
+            if (fileId) {
+                const file = DB_DATA.find(item => item.Id == fileId);
+                if (file) {
+                    showFileView(file);
+                } else {
+                    window.location.href = "index.html"; // Redirect if ID invalid
                 }
-            };
-            window.requestAnimationFrame(step);
-        }
-
-        // --- 3. SEARCH LOGIC ---
-        function performSearch(query) {
-            const grid = document.getElementById('fileGrid');
-            const btn = document.getElementById('loadMoreBtn');
-            currentIndex = 0;
-            grid.innerHTML = '';
-
-            if (!query) {
-                filteredData = allData.slice(0, 50); // Show recent 50 if empty
             } else {
-                const lowerQ = query.toLowerCase();
-                filteredData = allData.filter(item => item.Naam && item.Naam.toLowerCase().includes(lowerQ));
-                
-                // SEO Update
-                document.title = `Search: ${query} - Sheru Cloud`;
-                const newUrl = `?q=${encodeURIComponent(query)}`;
-                window.history.pushState({path: newUrl}, '', newUrl);
-            }
-
-            if (filteredData.length === 0) {
-                grid.innerHTML = `<div class="no-result">No resources found matching criteria.</div>`;
-                btn.style.display = 'none';
-            } else {
-                renderNextPage();
+                showDashboard();
             }
         }
 
-        // --- 4. RENDER CARDS ---
-        function renderNextPage() {
+        function showDashboard() {
+            document.getElementById('totalCount').innerText = DB_DATA.length.toLocaleString();
+            filteredData = DB_DATA; // Start with all data
+            renderList();
+        }
+
+        function showFileView(file) {
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('fileView').style.display = 'block';
+
+            document.getElementById('viewTitle').innerText = file.Naam;
+            document.getElementById('viewId').innerText = `Secure Index ID: ${file.Id}`;
+            
+            const encId = encryptId(file.Id);
+            document.getElementById('downloadBtn').href = `https://t.me/${BOT_USERNAME}?start=${encId}`;
+            document.title = `Access ${file.Naam} - Sheru Cloud`;
+        }
+
+        function renderList() {
             const grid = document.getElementById('fileGrid');
-            const btn = document.getElementById('loadMoreBtn');
-            const nextBatch = filteredData.slice(currentIndex, currentIndex + ITEMS_PER_PAGE);
+            const loadBtn = document.getElementById('loadMoreBtn');
+            const batch = filteredData.slice(currentIndex, currentIndex + ITEMS_PER_PAGE);
 
-            nextBatch.forEach(item => {
-                const encryptedId = encryptId(item.Id);
-                const botLink = `https://t.me/${BOT_USERNAME}?start=${encryptedId}`;
+            batch.forEach(item => {
+                const a = document.createElement('a');
+                a.href = `?id=${item.Id}`; // Link for Google Crawler
+                a.className = 'card';
                 
-                // Tech aesthetic for size
-                const size = (Math.random() * (4.0 - 0.5) + 0.5).toFixed(1) + "GB";
-
-                const card = document.createElement('a');
-                card.className = 'card';
-                card.href = botLink;
-                card.target = "_blank";
+                // Aesthetic: Random size & icon color
+                const size = (Math.random() * 5 + 0.5).toFixed(1);
                 
-                card.innerHTML = `
-                    <div class="icon-box"><i class="fas fa-file-code"></i></div>
+                a.innerHTML = `
+                    <div class="icon-box">
+                        <i class="fas fa-file-video"></i>
+                    </div>
                     <div class="info">
                         <div class="file-name">${item.Naam}</div>
                         <div class="file-meta">
                             <span>ID: ${item.Id}</span>
-                            <span style="color:var(--primary)">• ${size}</span>
+                            <span style="color:var(--primary)">• ${size} GB</span>
                         </div>
                     </div>
                 `;
-                grid.appendChild(card);
+                grid.appendChild(a);
             });
 
             currentIndex += ITEMS_PER_PAGE;
-            btn.style.display = (currentIndex >= filteredData.length) ? 'none' : 'block';
-        }
-
-        // --- HANDLERS ---
-        function triggerSearch() {
-            performSearch(document.getElementById('searchInput').value.trim());
-        }
-
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-             // Debounce for smoother typing
-             clearTimeout(window.searchTimer);
-             window.searchTimer = setTimeout(() => performSearch(e.target.value.trim()), 300);
-        });
-
-        function checkUrlAndRender() {
-            const params = new URLSearchParams(window.location.search);
-            const q = params.get('q');
-            if (q) {
-                document.getElementById('searchInput').value = q;
-                performSearch(q);
+            
+            if (currentIndex >= filteredData.length) {
+                loadBtn.style.display = 'none';
             } else {
-                performSearch("");
+                loadBtn.style.display = 'inline-block';
             }
         }
 
-        // START
-        init();
+        // Search Input Logic
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const grid = document.getElementById('fileGrid');
+            
+            grid.innerHTML = '';
+            currentIndex = 0;
+            
+            if (!val) {
+                filteredData = DB_DATA;
+            } else {
+                filteredData = DB_DATA.filter(i => i.Naam.toLowerCase().includes(val));
+            }
+            renderList();
+        });
 
+        document.getElementById('loadMoreBtn').addEventListener('click', renderList);
+
+        init();
     </script>
 </body>
 </html>
